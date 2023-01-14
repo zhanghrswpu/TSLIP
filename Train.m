@@ -17,14 +17,16 @@ epsilon_dual=zeros(max_iter,1);
 epsilon_abs=1e-4;
 epsilon_rel=1e-2;
 t=0;
+
+options = optimoptions(@fminunc,'Display','iter','Algorithm','quasi-newton','SpecifyObjectiveGradient',true);
 while(t<max_iter)
     fprintf(' \n####################### %d times %d cross %d iteretor start..===================== \n', itrator, rep,t);
     t=t+1;
-    jointW=TrainW(@(jointW)ProgressW(train_feature, train_distribution, jointW, weight1, weight2, gamma1, gamma3, lambda2, rho, relationL),jointW);
+    jointW=fminunc(@(jointW)ProgressW(train_feature, train_distribution, jointW, weight1, weight2, gamma1, gamma3, lambda2, rho, relationL),jointW,options);
     jointW=real(jointW);
     
     weight1_last = weight1;
-    weight1=TrainW1(@(weight1)ProgressW1(train_feature, jointW, weight1, weight2, weight3, gamma1, gamma2, lambda3, rho, L_F),weight1);
+    weight1=fminunc(@(weight1)ProgressW1(train_feature, jointW, weight1, weight2, weight3, gamma1, gamma2, lambda3, rho, L_F),weight1,options);
     weight1=real(weight1);
     
     weight2_last = weight2;
